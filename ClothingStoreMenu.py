@@ -1,3 +1,7 @@
+import pandas as pd
+import openpyxl
+import os
+
 
 # CLOTHING STORE CATALOG
 
@@ -139,9 +143,75 @@ def exchange_item():
             print("Quantity must be greater than zero.")
     else:
         print("Invalid item code. Please try again.")
-        
-        
+ 
+ 
+# FUNCTION: READ DATA FILE       
+def read_data_file(file_name):
+    try:
+        if not os.path.exists(file_name):
+            print("Error: File not found.")
+            return None
 
+        file_extension = os.path.splitext(file_name)[1].lower()
+
+        if file_extension == ".csv":
+            df = pd.read_csv(file_name)
+
+        elif file_extension == ".xlsx":
+            df = pd.read_excel(file_name)
+
+        else:
+            print("Error: Please use a CSV or XLSX file.")
+            return None
+
+        print("File successfully loaded!")
+        return df
+
+    except Exception as e:
+        print(f"Error reading file: {e}")
+        return None 
+    
+          
+def analyze_data_file():
+    file_name = input("Enter the file name (e.g., sales.csv): ")
+
+    df = read_data_file(file_name)
+
+    if df is None:
+        return
+
+    print("\n--- DATA ANALYSIS ---")
+
+    # Display the first five rows
+    print("\nFirst 5 rows:")
+    print(df.head())
+
+    # Display the number of rows and columns
+    print("\nDataset dimensions:")
+    print(f"Rows: {df.shape[0]}")
+    print(f"Columns: {df.shape[1]}")
+
+    # Display column names and data types
+    print("\nColumn information:")
+    print(df.dtypes)
+
+    # Check for missing values
+    print("\nMissing values per column:")
+    print(df.isnull().sum())
+
+    # Display statistics for numeric columns
+    print("\nNumerical statistics:")
+    print(df.describe())
+
+    # Display the most frequent values in categorical columns
+    categorical_columns = df.select_dtypes(
+        include=["object", "category"]
+    ).columns
+
+    for column in categorical_columns:
+        print(f"\nMost frequent values in '{column}':")
+        print(df[column].value_counts().head(5))
+        
 # MAIN MENU
 
 while True:
@@ -152,9 +222,10 @@ while True:
     print("4 - Check Item Price")
     print("5 - View Clothing Catalog")
     print("6 - Exit")
+    print("7. Analyze Sales Data")
 
     try:
-        choice = int(input("Select an option (1-6): "))
+        choice = int(input("Select an option (1-7): "))
 
         if choice == 1:
             return_item()
@@ -174,6 +245,9 @@ while True:
         elif choice == 6:
             print("Thank you for visiting our Clothing Store!")
             break
+        
+        elif choice == 7:
+            analyze_data_file()
 
         else:
             print("Invalid option. Please select a number between 1 and 6.")
