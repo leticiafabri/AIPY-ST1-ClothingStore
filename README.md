@@ -2,13 +2,15 @@
 
 # Clothing Store Management System
 
-A simple Python project developed for a business problem-solving class. The program simulates a clothing retail store and helps users perform basic operations related to clothing exchanges, returns, discounts, and price inquiries.
+A Python project developed for a business problem-solving class. The program simulates a clothing retail store and allows users to perform basic operations related to clothing exchanges, returns, discounts, price inquiries, and data analysis.
 
 ## Business Problem
 
-Clothing store employees need a simple way to handle customer requests, calculate refunds and exchange price differences, and provide accurate product prices.
+Clothing store employees need a simple way to handle customer requests, calculate refunds and exchange price differences, provide accurate product prices, and inspect business data.
 
 This project uses a predefined clothing catalog so that users select items by their product codes instead of entering prices manually.
+
+It also includes a data analysis feature that allows users to import CSV and Excel files, prepare datasets, and explore their contents using Python and Pandas.
 
 ## Features
 
@@ -20,8 +22,20 @@ The program includes an interactive menu with the following options:
 4. **Check Item Price** — Displays the price of a selected clothing item.
 5. **View Clothing Catalog** — Displays all available items, their codes, and prices.
 6. **Exit** — Closes the program.
+7. **Analyze Data File** — Reads a CSV or Excel file, prepares the dataset, and displays descriptive information and statistics.
 
-The menu includes basic input validation for invalid menu selections. The catalog is displayed before users are asked to enter item codes.
+### Data Analysis Features
+
+The data analysis functionality includes:
+
+- **File Reading:** Imports CSV (`.csv`) and Excel (`.xlsx`) files into a Pandas DataFrame.
+- **File Validation:** Checks whether the file format is supported and whether the file exists.
+- **Data Cleaning:** Removes completely empty rows and duplicate records and trims extra spaces from text values.
+- **Dataset Overview:** Displays the first five rows, number of rows and columns, and column names.
+- **Missing Value Analysis:** Counts missing values in each column.
+- **Numerical Statistics:** Displays descriptive statistics for numerical columns.
+- **Categorical Analysis:** Displays the five most frequent values in each categorical column.
+- **Record Conversion:** Converts the DataFrame into a list of dictionaries and displays the total number of records.
 
 ## Clothing Catalog
 
@@ -38,34 +52,23 @@ Prices are fictional and used for demonstration purposes.
 
 ## Technologies
 
-- Python
-- Jupyter Notebook
-- Python dictionaries
-- `input()` and `print()`
-- Functions, loops, conditionals, and basic exception handling
+- **Python** — Main programming language.
+- **Jupyter Notebook** — Development and execution environment.
+- **Pandas** — DataFrame creation, file reading, data cleaning, and data analysis.
+- **OpenPyXL** — Excel file support.
+- **OS module** — File existence and extension checks.
+- **Python dictionaries** — Store the clothing catalog.
+- **Lists and list of dictionaries** — Organize and process data.
+- **Functions, loops, conditionals, and exception handling** — Implement business operations and input validation.
 
-## How to Run
+## Requirements
 
-1. Clone or download this repository.
-2. Open the `.ipynb` notebook in Jupyter Notebook, JupyterLab, or Google Colab.
-3. Run the notebook cells in order, starting with the clothing catalog and function definitions.
-4. Run the main menu cell.
-5. Select an option by entering its number and follow the prompts.
+The project requires Python and the following libraries:
 
-## Business Rules and Assumptions
+- `pandas`
+- `openpyxl`
 
-- Product prices are predefined in the clothing catalog.
-- Items are selected using their numeric product codes.
-- The discount rate is fixed at 10%.
-- Returns are assumed to be eligible for a full refund at the catalog price.
-- Exchanges compare the catalog prices of the original and replacement items.
-- The quantity must be greater than zero.
-- The program is a classroom simulation and does not process real payments or store transaction records.
+Install the dependencies using:
 
-## Project Goal
-
-The goal is to apply fundamental Python concepts to a practical business scenario by creating a small, interactive solution that performs calculations and displays clear results.
-
----
-
-*Created as part of a class project on AI-assisted Python for business problem solving.*
+```bash
+pip install pandas openpyxl
