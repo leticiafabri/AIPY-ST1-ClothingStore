@@ -22,6 +22,17 @@ def view_catalog():
     for code, item in clothing_catalog.items():
         print(f"{code} - {item['name']}: ${item['price']:.2f}")
 
+        
+# FUNCTION: GET VALID INTEGER INPUT
+
+def get_integer_input(message):
+    while True:
+        try:
+            value = int(input(message))
+            return value
+        except ValueError:
+            print("Invalid input. Please enter a whole number.")
+
 
 # FUNCTION: DISPLAY ITEM OPTIONS
 
@@ -37,7 +48,7 @@ def check_price():
     print("\n--- CHECK ITEM PRICE ---")
     
     display_item_options()
-    code = int(input("Enter the item code: "))
+    code = get_integer_input("Enter the item code: ")
 
     if code in clothing_catalog:
         item = clothing_catalog[code]
@@ -55,10 +66,10 @@ def get_discount():
     print("\n--- GET DISCOUNT ---")
 
     display_item_options()
-    code = int(input("Enter the item code: "))
+    code = get_integer_input("Enter the item code: ")
 
     if code in clothing_catalog:
-        quantity = int(input("Enter the quantity: "))
+        quantity = get_integer_input("Enter the quantity: ")
 
         if quantity > 0:
             item = clothing_catalog[code]
@@ -87,10 +98,10 @@ def return_item():
     print("\n--- RETURN ITEM ---")
 
     display_item_options()
-    code = int(input("Enter the item code: "))
+    code = get_integer_input("Enter the item code: ")
 
     if code in clothing_catalog:
-        quantity = int(input("Enter the quantity to return: "))
+        quantity = get_integer_input("Enter the quantity to return: ")
 
         if quantity > 0:
             item = clothing_catalog[code]
@@ -112,11 +123,11 @@ def exchange_item():
     print("\n--- EXCHANGE ITEM ---")
 
     display_item_options()
-    original_code = int(input("Enter the original item code: "))
-    replacement_code = int(input("Enter the replacement item code: "))
+    original_code = get_integer_input("Enter the original item code: ")
+    replacement_code = get_integer_input("Enter the replacement item code: ")
 
     if original_code in clothing_catalog and replacement_code in clothing_catalog:
-        quantity = int(input("Enter the quantity to exchange: "))
+        quantity = get_integer_input("Enter the quantity to exchange: ")
 
         if quantity > 0:
             original_item = clothing_catalog[original_code]
@@ -146,32 +157,67 @@ def exchange_item():
  
  
 # FUNCTION: READ DATA FILE       
+
 def read_data_file(file_name):
     try:
+        file_extension = os.path.splitext(file_name)[1].lower()
+
+        # Validate the file extension
+        if file_extension not in [".csv", ".xlsx"]:
+            print("Error: Please use a CSV or XLSX file.")
+            return None
+
+        # Check if the file exists
         if not os.path.exists(file_name):
             print("Error: File not found.")
             return None
 
-        file_extension = os.path.splitext(file_name)[1].lower()
-
+        # Read the file according to its extension
         if file_extension == ".csv":
             df = pd.read_csv(file_name)
 
-        elif file_extension == ".xlsx":
-            df = pd.read_excel(file_name)
-
         else:
-            print("Error: Please use a CSV or XLSX file.")
-            return None
+            df = pd.read_excel(file_name)
 
         print("File successfully loaded!")
         return df
 
     except Exception as e:
         print(f"Error reading file: {e}")
-        return None 
+        return None
     
-          
+ 
+# FUNCTION: PREPARE AND CLEAN DATA
+
+def prepare_data(df):
+    print("\n--- DATA PREPARATION ---")
+
+    original_rows = len(df)
+
+    # Remove completely empty rows
+    df = df.dropna(how="all").copy()
+
+    # Remove duplicate rows
+    df = df.drop_duplicates().copy()
+
+    # Remove extra spaces from text values
+    text_columns = df.select_dtypes(
+        include=["object", "string"]
+    ).columns
+
+    for column in text_columns:
+        df[column] = df[column].str.strip()
+
+    cleaned_rows = len(df)
+
+    print(f"Original rows: {original_rows}")
+    print(f"Rows after cleaning: {cleaned_rows}")
+    print(f"Rows removed: {original_rows - cleaned_rows}")
+
+    return df
+ 
+ 
+# FUNCTION: ANALYZE DATA FILE         
 def analyze_data_file():
     file_name = input("Enter the file name (e.g., sales.csv): ")
 
@@ -179,6 +225,12 @@ def analyze_data_file():
 
     if df is None:
         return
+    
+    df = prepare_data(df)
+    
+    # Convert the DataFrame into a list of dictionaries
+    data_records = df.to_dict(orient="records")
+    print(f"\nTotal records: {len(data_records)}")
 
     print("\n--- DATA ANALYSIS ---")
 
@@ -191,9 +243,11 @@ def analyze_data_file():
     print(f"Rows: {df.shape[0]}")
     print(f"Columns: {df.shape[1]}")
 
-    # Display column names and data types
-    print("\nColumn information:")
-    print(df.dtypes)
+    # Display column names and save them in a list
+    column_names = df.columns.tolist()
+
+    print("\nDataset columns:")
+    print(column_names)
 
     # Check for missing values
     print("\nMissing values per column:")
@@ -222,7 +276,7 @@ while True:
     print("4 - Check Item Price")
     print("5 - View Clothing Catalog")
     print("6 - Exit")
-    print("7. Analyze Sales Data")
+    print("7. Analyze Data File")
 
     try:
         choice = int(input("Select an option (1-7): "))
@@ -250,7 +304,7 @@ while True:
             analyze_data_file()
 
         else:
-            print("Invalid option. Please select a number between 1 and 6.")
+            print("Invalid option. Please select a number between 1 and 7.")
 
     except ValueError:
         print("Invalid input. Please enter a number.")
